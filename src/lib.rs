@@ -3,4 +3,5 @@
 pub mod client;
 mod connection;
 pub mod models;
+mod secrets;
 mod system;

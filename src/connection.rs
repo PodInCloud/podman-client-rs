@@ -11,7 +11,10 @@ use hyper_util::rt::TokioIo;
 use serde::de::DeserializeOwned;
 use tokio::net::UnixStream;
 
-use crate::{client::Client, models::lib::Error};
+use crate::{
+    client::Client,
+    models::{lib::Error, podman::error::Error as PodmanError},
+};
 
 impl Client {
     pub(crate) async fn build_connection<B>(&self) -> Result<SendRequest<B>, Error>
@@ -61,12 +64,17 @@ impl Client {
         let body_bytes = body.collect().await?.to_bytes();
 
         if !res_status.is_success() {
-            return Err(format!(
-                "Got error status: {}. Error: {}",
-                res_status,
-                String::from_utf8(body_bytes.to_vec())?,
-            )
-            .into());
+            let podman_err = serde_json::from_slice::<PodmanError>(&body_bytes);
+
+            return match podman_err {
+                Ok(e) => Err(Box::new(e)),
+                Err(_) => Err(format!(
+                    "Got error status: {}. Error: {}",
+                    res_status,
+                    String::from_utf8(body_bytes.to_vec())?,
+                )
+                .into()),
+            };
         }
 
         let header = res_parts
