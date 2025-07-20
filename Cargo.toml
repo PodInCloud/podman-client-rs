@@ -1,0 +1,23 @@
+[package]
+name = "podman-client"
+version = "0.0.1"
+edition = "2024"
+description = "A native Rust client for the Podman REST API over Unix sockets"
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/PodInCloud/podman-client-rs"
+keywords = ["podman", "container", "unix-socket", "client", "docker"]
+categories = ["api-bindings", "asynchronous", "network-programming"]
+authors = ["Muhammad Naufal Hilmy Makarim <mail@hilmy.dev>"]
+
+[dev-dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+users = "0.11"
+
+[dependencies]
+http-body-util = "0.1"
+hyper = { version = "1", features = ["client", "http1"] }
+hyper-util = { version = "0.1", features = ["tokio"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["net"] }
