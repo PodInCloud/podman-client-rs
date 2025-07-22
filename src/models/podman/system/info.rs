@@ -1,18 +1,19 @@
 use core::fmt;
+use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct Info {
-    pub host: InfoHost,
-    pub store: InfoStore,
-    pub registries: InfoRegistries,
-    pub plugins: InfoPlugins,
-    pub version: InfoVersion,
+pub struct SystemInfo {
+    pub host: SystemInfoHost,
+    pub store: SystemInfoStore,
+    pub registries: HashMap<String, serde_json::Value>,
+    pub plugins: SystemInfoPlugins,
+    pub version: SystemInfoVersion,
 }
 
-impl fmt::Debug for Info {
+impl fmt::Debug for SystemInfo {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let json = serde_json::to_string_pretty(self).map_err(|_| fmt::Error)?;
         f.write_str(&json)
@@ -21,44 +22,46 @@ impl fmt::Debug for Info {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHost {
+pub struct SystemInfoHost {
     pub arch: String,
     pub buildah_version: String,
     pub cgroup_manager: String,
     pub cgroup_controllers: Vec<String>,
-    pub conmon: InfoHostConmon,
+    pub conmon: SystemInfoHostConmon,
     pub cpus: u32,
-    pub cpu_utilization: InfoHostCpuUtilization,
+    pub cpu_utilization: SystemInfoHostCpuUtilization,
     pub database_backend: String,
-    pub distribution: InfoHostDistribution,
+    pub distribution: SystemInfoHostDistribution,
     pub event_logger: String,
     pub free_locks: u64,
     pub hostname: String,
-    pub id_mappings: InfoHostIdMappings,
+    pub id_mappings: SystemInfoHostIdMappings,
     pub kernel: String,
     pub log_driver: String,
     pub mem_free: u64,
     pub mem_total: u64,
     pub network_backend: String,
-    pub network_backend_info: InfoHostNetworkBackendInfo,
-    pub oci_runtime: InfoHostOciRuntime,
+    pub network_backend_info: SystemInfoHostNetworkBackendSystemInfo,
+    pub oci_runtime: SystemInfoHostOciRuntime,
     pub os: String,
-    pub remote_socket: InfoHostRemoteSocket,
+    pub remote_socket: SystemInfoHostRemoteSocket,
     pub rootless_network_cmd: String,
     pub service_is_remote: bool,
-    pub security: InfoHostSecurity,
-    pub slirp4netns: InfoHostSlirp4netns,
-    pub pasta: InfoHostPasta,
+    pub security: SystemInfoHostSecurity,
+    pub slirp4netns: SystemInfoHostSlirp4netns,
+    pub pasta: SystemInfoHostPasta,
     pub swap_free: u64,
     pub swap_total: u64,
     pub uptime: String,
     pub variant: String,
     pub linkmode: String,
+    pub emulated_architectures: Option<Vec<String>>,
+    pub runtime_info: Option<HashMap<String, serde_json::Value>>,
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostConmon {
+pub struct SystemInfoHostConmon {
     pub package: String,
     pub path: String,
     pub version: String,
@@ -66,7 +69,7 @@ pub struct InfoHostConmon {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostCpuUtilization {
+pub struct SystemInfoHostCpuUtilization {
     pub user_percent: f32,
     pub system_percent: f32,
     pub idle_percent: f32,
@@ -74,21 +77,22 @@ pub struct InfoHostCpuUtilization {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostDistribution {
+pub struct SystemInfoHostDistribution {
     pub distribution: String,
     pub variant: String,
     pub version: String,
+    pub codename: Option<String>,
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostIdMappings {
-    pub gidmap: Vec<InfoHostIdMappingsIdMap>,
-    pub uidmap: Vec<InfoHostIdMappingsIdMap>,
+pub struct SystemInfoHostIdMappings {
+    pub gidmap: Vec<SystemInfoHostIdMappingsIdMap>,
+    pub uidmap: Vec<SystemInfoHostIdMappingsIdMap>,
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct InfoHostIdMappingsIdMap {
+pub struct SystemInfoHostIdMappingsIdMap {
     pub container_id: u32,
     pub host_id: u32,
     pub size: u32,
@@ -96,17 +100,17 @@ pub struct InfoHostIdMappingsIdMap {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostNetworkBackendInfo {
+pub struct SystemInfoHostNetworkBackendSystemInfo {
     pub backend: String,
     pub version: String,
     pub package: String,
     pub path: String,
-    pub dns: InfoHostNetworkBackendInfoDns,
+    pub dns: SystemInfoHostNetworkBackendSystemInfoDns,
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostNetworkBackendInfoDns {
+pub struct SystemInfoHostNetworkBackendSystemInfoDns {
     pub version: String,
     pub package: String,
     pub path: String,
@@ -114,7 +118,7 @@ pub struct InfoHostNetworkBackendInfoDns {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostOciRuntime {
+pub struct SystemInfoHostOciRuntime {
     pub name: String,
     pub package: String,
     pub path: String,
@@ -123,14 +127,14 @@ pub struct InfoHostOciRuntime {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostRemoteSocket {
+pub struct SystemInfoHostRemoteSocket {
     pub path: String,
     pub exists: bool,
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostSecurity {
+pub struct SystemInfoHostSecurity {
     pub apparmor_enabled: bool,
     pub capabilities: String,
     pub rootless: bool,
@@ -141,7 +145,7 @@ pub struct InfoHostSecurity {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostSlirp4netns {
+pub struct SystemInfoHostSlirp4netns {
     pub executable: String,
     pub package: String,
     pub version: String,
@@ -149,7 +153,7 @@ pub struct InfoHostSlirp4netns {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoHostPasta {
+pub struct SystemInfoHostPasta {
     pub executable: String,
     pub package: String,
     pub version: String,
@@ -157,17 +161,17 @@ pub struct InfoHostPasta {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoStore {
+pub struct SystemInfoStore {
     pub config_file: String,
-    pub container_store: InfoStoreContainerStore,
+    pub container_store: SystemInfoStoreContainerStore,
     pub graph_driver_name: String,
-    pub graph_options: serde_json::Value,
+    pub graph_options: HashMap<String, serde_json::Value>,
     pub graph_root: String,
     pub graph_root_allocated: u64,
     pub graph_root_used: u64,
-    pub graph_status: InfoStoreGraphStatus,
+    pub graph_status: HashMap<String, String>,
     pub image_copy_tmp_dir: String,
-    pub image_store: InfoStoreImageStore,
+    pub image_store: SystemInfoStoreImageStore,
     pub run_root: String,
     pub volume_path: String,
     pub transient_store: bool,
@@ -175,7 +179,7 @@ pub struct InfoStore {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoStoreContainerStore {
+pub struct SystemInfoStoreContainerStore {
     pub number: u32,
     pub paused: u32,
     pub running: u32,
@@ -183,49 +187,22 @@ pub struct InfoStoreContainerStore {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct InfoStoreGraphStatus {
-    #[serde(rename = "Backing Filesystem")]
-    pub backing_filesystem: String,
-
-    #[serde(rename = "Native Overlay Diff")]
-    pub native_overlay_diff: String,
-
-    #[serde(rename = "Supports d_type")]
-    pub supports_d_type: String,
-
-    #[serde(rename = "Supports shifting")]
-    pub supports_shifting: String,
-
-    #[serde(rename = "Supports volatile")]
-    pub supports_volatile: String,
-
-    #[serde(rename = "Using metacopy")]
-    pub using_metacopy: String,
-}
-
-#[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoStoreImageStore {
+pub struct SystemInfoStoreImageStore {
     pub number: u32,
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
-pub struct InfoRegistries {
-    pub search: Vec<String>,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "camelCase")]
-pub struct InfoPlugins {
+pub struct SystemInfoPlugins {
     pub volume: Vec<String>,
     pub network: Vec<String>,
     pub log: Vec<String>,
-    pub authorization: Option<serde_json::Value>,
+    pub authorization: Option<Vec<String>>,
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct InfoVersion {
+pub struct SystemInfoVersion {
     #[serde(rename = "APIVersion")]
     pub api_version: String,
 

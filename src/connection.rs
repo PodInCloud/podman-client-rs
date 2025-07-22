@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::any::TypeId;
 
 use http_body_util::BodyExt;
 use hyper::{
@@ -9,6 +9,7 @@ use hyper::{
 };
 use hyper_util::rt::TokioIo;
 use serde::de::DeserializeOwned;
+use serde_json::{Map, Value};
 use tokio::net::UnixStream;
 
 use crate::{
@@ -37,17 +38,18 @@ impl Client {
         Ok(sender)
     }
 
-    pub(crate) async fn send_request<B, T>(
+    pub(crate) async fn send_request<RequestBody, ResponseHeader, ResponseBody>(
         &self,
         method: &str,
         path: &str,
-        body: B,
-    ) -> Result<(HashMap<String, String>, Option<T>), Error>
+        body: RequestBody,
+    ) -> Result<(ResponseHeader, ResponseBody), Error>
     where
-        B: Body + Send + 'static,
-        B::Data: Send,
-        B::Error: Into<Error>,
-        T: DeserializeOwned,
+        RequestBody: Body + Send + 'static,
+        RequestBody::Data: Send,
+        RequestBody::Error: Into<Error>,
+        ResponseHeader: DeserializeOwned + 'static,
+        ResponseBody: DeserializeOwned + 'static,
     {
         let mut sender = self.build_connection().await?;
 
@@ -77,15 +79,23 @@ impl Client {
             };
         }
 
-        let header = res_parts
-            .headers
-            .iter()
-            .map(|(k, v)| (k.to_string(), v.to_str().unwrap_or("").to_owned()))
-            .collect();
-        let data: Option<T> = if body_bytes.is_empty() {
-            None
+        let header = if TypeId::of::<ResponseHeader>() == TypeId::of::<()>() {
+            serde_json::from_value(Value::Null)?
         } else {
-            Some(serde_json::from_slice(&body_bytes)?)
+            let header: Map<String, Value> = res_parts
+                .headers
+                .iter()
+                .filter_map(|(k, v)| {
+                    Some((k.to_string(), Value::String(v.to_str().ok()?.to_string())))
+                })
+                .collect();
+            serde_json::from_value(Value::Object(header))?
+        };
+
+        let data = if TypeId::of::<ResponseBody>() == TypeId::of::<()>() || body_bytes.is_empty() {
+            serde_json::from_value(Value::Null)?
+        } else {
+            serde_json::from_slice(&body_bytes)?
         };
 
         Ok((header, data))

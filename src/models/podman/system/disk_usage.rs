@@ -4,14 +4,14 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct DiskUsage {
+pub struct SystemDiskUsage {
     pub images_size: u64,
-    pub images: Vec<DiskUsageImage>,
-    pub containers: Vec<DiskUsageContainer>,
-    pub volumes: Vec<DiskUsageVolume>,
+    pub images: Vec<SystemDiskUsageImage>,
+    pub containers: Vec<SystemDiskUsageContainer>,
+    pub volumes: Vec<SystemDiskUsageVolume>,
 }
 
-impl fmt::Debug for DiskUsage {
+impl fmt::Debug for SystemDiskUsage {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let json = serde_json::to_string_pretty(self).map_err(|_| fmt::Error)?;
         f.write_str(&json)
@@ -19,7 +19,7 @@ impl fmt::Debug for DiskUsage {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct DiskUsageImage {
+pub struct SystemDiskUsageImage {
     #[serde(rename = "Repository")]
     pub repository: String,
 
@@ -46,7 +46,7 @@ pub struct DiskUsageImage {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct DiskUsageContainer {
+pub struct SystemDiskUsageContainer {
     #[serde(rename = "ContainerID")]
     pub container_id: String,
 
@@ -77,7 +77,7 @@ pub struct DiskUsageContainer {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct DiskUsageVolume {
+pub struct SystemDiskUsageVolume {
     pub links: u64,
     pub reclaimable_size: u64,
     pub size: u64,

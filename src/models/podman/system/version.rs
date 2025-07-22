@@ -1,28 +1,29 @@
 use core::fmt;
+use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize)]
-pub struct Version {
+pub struct SystemVersion {
     #[serde(rename = "Platform")]
-    pub platform: VersionPlatform,
+    pub platform: SystemVersionPlatform,
 
     #[serde(rename = "Components")]
-    pub components: Vec<VersionComponent>,
+    pub components: Vec<SystemVersionComponent>,
 
-    #[serde(rename = "Version")]
+    #[serde(rename = "SystemVersion")]
     pub version: String,
 
-    #[serde(rename = "ApiVersion")]
+    #[serde(rename = "SystemApiVersion")]
     pub api_version: String,
 
-    #[serde(rename = "MinAPIVersion")]
+    #[serde(rename = "SystemMinAPIVersion")]
     pub min_api_version: String,
 
     #[serde(rename = "GitCommit")]
     pub git_commit: String,
 
-    #[serde(rename = "GoVersion")]
+    #[serde(rename = "SystemGoVersion")]
     pub go_version: String,
 
     #[serde(rename = "Os")]
@@ -31,14 +32,17 @@ pub struct Version {
     #[serde(rename = "Arch")]
     pub arch: String,
 
-    #[serde(rename = "KernelVersion")]
+    #[serde(rename = "SystemKernelVersion")]
     pub kernel_version: String,
 
     #[serde(rename = "BuildTime")]
     pub build_time: String,
+
+    #[serde(rename = "Experimental")]
+    pub experimental: Option<bool>,
 }
 
-impl fmt::Debug for Version {
+impl fmt::Debug for SystemVersion {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let json = serde_json::to_string_pretty(self).map_err(|_| fmt::Error)?;
         f.write_str(&json)
@@ -47,57 +51,14 @@ impl fmt::Debug for Version {
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct VersionPlatform {
+pub struct SystemVersionPlatform {
     pub name: String,
 }
 
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "PascalCase")]
-pub struct VersionComponent {
+pub struct SystemVersionComponent {
     pub name: String,
     pub version: String,
-    pub details: VersionComponentDetails,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(untagged)]
-pub enum VersionComponentDetails {
-    PodmanEngine(VersionComponentDetailsPodmanEngine),
-    Else(VersionComponentDetailsElse),
-}
-
-#[derive(Deserialize, Serialize)]
-pub struct VersionComponentDetailsPodmanEngine {
-    #[serde(rename = "APIVersion")]
-    pub api_version: String,
-
-    #[serde(rename = "Arch")]
-    pub arch: String,
-
-    #[serde(rename = "BuildTime")]
-    pub build_time: String,
-
-    #[serde(rename = "Experimental")]
-    pub experimental: String,
-
-    #[serde(rename = "GitCommit")]
-    pub git_commit: String,
-
-    #[serde(rename = "GoVersion")]
-    pub go_version: String,
-
-    #[serde(rename = "KernelVersion")]
-    pub kernel_version: String,
-
-    #[serde(rename = "MinAPIVersion")]
-    pub min_api_version: String,
-
-    #[serde(rename = "Os")]
-    pub os: String,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct VersionComponentDetailsElse {
-    pub package: String,
+    pub details: HashMap<String, String>,
 }

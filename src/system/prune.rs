@@ -3,16 +3,14 @@ use hyper::body::Bytes;
 
 use crate::{
     client::Client,
-    models::{lib::Error, podman::system::prune::Prune},
+    models::{lib::Error, podman::system::prune::SystemPrune},
 };
 
 impl Client {
-    pub async fn prune(&self) -> Result<Prune, Error> {
+    pub async fn system_prune(&self) -> Result<SystemPrune, Error> {
         let (_, data) = self
-            .send_request("POST", "/libpod/system/prune", Empty::<Bytes>::new())
+            .send_request::<_, (), _>("POST", "/libpod/system/prune", Empty::<Bytes>::new())
             .await?;
-
-        let data = data.ok_or("Missing response body for prune")?;
 
         Ok(data)
     }

@@ -3,16 +3,14 @@ use hyper::body::Bytes;
 
 use crate::{
     client::Client,
-    models::{lib::Error, podman::system::version::Version},
+    models::{lib::Error, podman::system::version::SystemVersion},
 };
 
 impl Client {
-    pub async fn version(&self) -> Result<Version, Error> {
+    pub async fn system_version(&self) -> Result<SystemVersion, Error> {
         let (_, data) = self
-            .send_request("GET", "/libpod/version", Empty::<Bytes>::new())
+            .send_request::<_, (), _>("GET", "/libpod/version", Empty::<Bytes>::new())
             .await?;
-
-        let data = data.ok_or("Missing response body for version")?;
 
         Ok(data)
     }
