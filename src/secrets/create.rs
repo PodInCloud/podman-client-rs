@@ -9,9 +9,9 @@ use crate::{
 };
 
 impl Client {
-    pub async fn secret_create<'a>(
+    pub async fn secret_create(
         &self,
-        options: SecretCreateOptions<'a>,
+        options: SecretCreateOptions<'_>,
     ) -> Result<SecretCreate, Error> {
         let mut query = form_urlencoded::Serializer::new(String::new());
         query.append_pair("name", &options.name);

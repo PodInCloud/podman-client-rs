@@ -12,9 +12,9 @@ use crate::{
 };
 
 impl Client {
-    pub async fn system_check<'a>(
+    pub async fn system_check(
         &self,
-        options: Option<SystemCheckOptions<'a>>,
+        options: Option<SystemCheckOptions<'_>>,
     ) -> Result<SystemCheck, Error> {
         let mut query = form_urlencoded::Serializer::new(String::new());
         if let Some(options) = options {

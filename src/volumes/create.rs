@@ -10,9 +10,9 @@ use crate::{
 };
 
 impl Client {
-    pub async fn volume_create<'a>(
+    pub async fn volume_create(
         &self,
-        options: VolumeCreateOptions<'a>,
+        options: VolumeCreateOptions<'_>,
     ) -> Result<VolumeCreate, Error> {
         let req_body = serde_json::to_vec(&options)?;
 

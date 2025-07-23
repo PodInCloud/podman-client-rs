@@ -7,7 +7,7 @@ use crate::{
 };
 
 impl Client {
-    pub async fn secret_exists<'a>(&self, options: SecretExistsOptions<'a>) -> Result<(), Error> {
+    pub async fn secret_exists(&self, options: SecretExistsOptions<'_>) -> Result<(), Error> {
         self.send_request::<_, (), ()>(
             "GET",
             &["/libpod/secrets/", options.name, "/exists"].concat(),

@@ -8,7 +8,7 @@ use crate::{
 };
 
 impl Client {
-    pub async fn secret_remove<'a>(&self, options: SecretRemoveOptions<'a>) -> Result<(), Error> {
+    pub async fn secret_remove(&self, options: SecretRemoveOptions<'_>) -> Result<(), Error> {
         let mut path = ["/libpod/secrets/", &options.name].concat();
 
         if let Some(all) = options.all {

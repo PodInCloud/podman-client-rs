@@ -8,30 +8,35 @@ use crate::{
     client::Client,
     models::{
         lib::Error,
-        podman::secrets::list::{SecretList, SecretListOptions},
+        podman::volumes::prune::{VolumePrune, VolumePruneOptions},
     },
 };
 
 impl Client {
-    pub async fn secret_list(
+    pub async fn volume_prune(
         &self,
-        options: Option<SecretListOptions<'_>>,
-    ) -> Result<SecretList, Error> {
-        let mut path = "/libpod/secrets/json".to_owned();
+        options: Option<VolumePruneOptions<'_>>,
+    ) -> Result<VolumePrune, Error> {
+        let mut path = "/libpod/volumes/prune".to_owned();
 
         if let Some(options) = options
             && let Some(opt_filters) = options.filters
         {
             let mut filters = HashMap::new();
-            if let Some(name) = opt_filters.name
-                && !name.is_empty()
+            if let Some(until) = opt_filters.until
+                && !until.is_empty()
             {
-                filters.insert("name", name);
+                filters.insert("until", until);
             }
-            if let Some(id) = opt_filters.id
-                && !id.is_empty()
+            if let Some(label) = opt_filters.label
+                && !label.is_empty()
             {
-                filters.insert("id", id);
+                filters.insert("label", label);
+            }
+            if let Some(labelnot) = opt_filters.labelnot
+                && !labelnot.is_empty()
+            {
+                filters.insert("label!", labelnot);
             }
 
             if !filters.is_empty() {
@@ -42,7 +47,7 @@ impl Client {
         }
 
         let (_, data) = self
-            .send_request::<_, (), _>("GET", &path, Empty::<Bytes>::new())
+            .send_request::<_, (), _>("POST", &path, Empty::<Bytes>::new())
             .await?;
 
         Ok(data)
