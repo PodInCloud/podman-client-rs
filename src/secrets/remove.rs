@@ -3,7 +3,9 @@ use hyper::body::Bytes;
 
 use crate::{
     client::Client,
-    models::{lib::Error, podman::secrets::remove::SecretRemoveOptions},
+    models::{
+        connection::SendRequestOptions, lib::Error, podman::secrets::remove::SecretRemoveOptions,
+    },
     utils::bool_to_str::bool_to_str,
 };
 
@@ -15,8 +17,13 @@ impl Client {
             path = [path.as_str(), "?all=", bool_to_str(all)].concat();
         }
 
-        self.send_request::<_, (), ()>("DELETE", &path, Empty::<Bytes>::new())
-            .await?;
+        self.send_request::<_, (), ()>(SendRequestOptions {
+            method: "DELETE",
+            path: &path,
+            header: None,
+            body: Empty::<Bytes>::new(),
+        })
+        .await?;
 
         Ok(())
     }

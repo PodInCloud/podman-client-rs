@@ -4,6 +4,7 @@ use hyper::body::Bytes;
 use crate::{
     client::Client,
     models::{
+        connection::SendRequestOptions,
         lib::Error,
         podman::secrets::inspect::{SecretInspect, SecretInspectOptions},
     },
@@ -22,7 +23,12 @@ impl Client {
         }
 
         let (_, data) = self
-            .send_request::<_, (), _>("GET", &path, Empty::<Bytes>::new())
+            .send_request::<_, (), _>(SendRequestOptions {
+                method: "GET",
+                path: &path,
+                header: None,
+                body: Empty::<Bytes>::new(),
+            })
             .await?;
 
         Ok(data)

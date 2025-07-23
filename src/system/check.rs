@@ -5,6 +5,7 @@ use url::form_urlencoded;
 use crate::{
     client::Client,
     models::{
+        connection::SendRequestOptions,
         lib::Error,
         podman::system::check::{SystemCheck, SystemCheckOptions},
     },
@@ -40,7 +41,12 @@ impl Client {
         }
 
         let (_, data) = self
-            .send_request::<_, (), _>("POST", &path, Empty::<Bytes>::new())
+            .send_request::<_, (), _>(SendRequestOptions {
+                method: "POST",
+                path: &path,
+                header: None,
+                body: Empty::<Bytes>::new(),
+            })
             .await?;
 
         Ok(data)

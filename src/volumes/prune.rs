@@ -7,6 +7,7 @@ use url::form_urlencoded::byte_serialize;
 use crate::{
     client::Client,
     models::{
+        connection::SendRequestOptions,
         lib::Error,
         podman::volumes::prune::{VolumePrune, VolumePruneOptions},
     },
@@ -47,7 +48,12 @@ impl Client {
         }
 
         let (_, data) = self
-            .send_request::<_, (), _>("POST", &path, Empty::<Bytes>::new())
+            .send_request::<_, (), _>(SendRequestOptions {
+                method: "POST",
+                path: &path,
+                header: None,
+                body: Empty::<Bytes>::new(),
+            })
             .await?;
 
         Ok(data)

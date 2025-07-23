@@ -14,7 +14,7 @@ use tokio::net::UnixStream;
 
 use crate::{
     client::Client,
-    models::{lib::Error, podman::error::Error as PodmanError},
+    models::{connection::SendRequestOptions, lib::Error, podman::error::Error as PodmanError},
 };
 
 impl Client {
@@ -40,9 +40,7 @@ impl Client {
 
     pub(crate) async fn send_request<RequestBody, ResponseHeader, ResponseBody>(
         &self,
-        method: &str,
-        path: &str,
-        body: RequestBody,
+        options: SendRequestOptions<'_, RequestBody>,
     ) -> Result<(ResponseHeader, ResponseBody), Error>
     where
         RequestBody: Body + Send + 'static,
@@ -53,12 +51,12 @@ impl Client {
     {
         let mut sender = self.build_connection().await?;
 
-        let uri = [self.podman_base_url, path].concat();
+        let uri = [self.podman_base_url, options.path].concat();
         let req = Request::builder()
-            .method(method)
+            .method(options.method)
             .uri(uri)
             .header(HOST, "d")
-            .body(body)?;
+            .body(options.body)?;
 
         let res = sender.send_request(req).await?;
         let (res_parts, body) = res.into_parts();
