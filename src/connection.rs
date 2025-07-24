@@ -78,7 +78,7 @@ impl Client {
         }
 
         let header = if TypeId::of::<ResponseHeader>() == TypeId::of::<()>() {
-            serde_json::from_value(Value::Null)?
+            serde_json::from_slice(b"null")?
         } else {
             let header: Map<String, Value> = res_parts
                 .headers
@@ -91,7 +91,7 @@ impl Client {
         };
 
         let data = if TypeId::of::<ResponseBody>() == TypeId::of::<()>() || body_bytes.is_empty() {
-            serde_json::from_value(Value::Null)?
+            serde_json::from_slice(b"null")?
         } else {
             serde_json::from_slice(&body_bytes)?
         };

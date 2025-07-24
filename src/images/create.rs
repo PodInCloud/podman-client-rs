@@ -152,7 +152,7 @@ impl Client {
             .send_request::<_, (), _>(SendRequestOptions {
                 method: "POST",
                 path: &path,
-                header: header,
+                header,
                 body: Empty::<Bytes>::new(),
             })
             .await?;
