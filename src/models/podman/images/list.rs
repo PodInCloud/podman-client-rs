@@ -1,3 +1,4 @@
+use core::fmt;
 use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
@@ -41,4 +42,11 @@ pub struct ImageListItem {
     pub shared_size: i64,
     pub size: i64,
     pub virtual_size: i64,
+}
+
+impl fmt::Debug for ImageListItem {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let json = serde_json::to_string_pretty(self).map_err(|_| fmt::Error)?;
+        f.write_str(&json)
+    }
 }

@@ -20,7 +20,7 @@ impl Client {
         options: Option<ImageCreateOptions<'_>>,
     ) -> Result<ImageCreate, Error> {
         let mut path = "/libpod/build".to_owned();
-        let header = None;
+        let mut header = None;
 
         if let Some(options) = options {
             let mut query = form_urlencoded::Serializer::new(String::new());
@@ -37,16 +37,16 @@ impl Client {
                 query.append_pair("compatvolumes", bool_to_str(compat_volumes));
             }
             if let Some(cpu_period) = options.cpu_period {
-                query.append_pair("cpuperiod", &cpu_period.to_string());
+                query.append_pair("cpuperiod", itoa::Buffer::new().format(cpu_period));
             }
             if let Some(cpu_quota) = options.cpu_quota {
-                query.append_pair("cpuquota", &cpu_quota.to_string());
+                query.append_pair("cpuquota", itoa::Buffer::new().format(cpu_quota));
             }
             if let Some(cpu_set_cpus) = options.cpu_set_cpus {
                 query.append_pair("cpusetcpus", cpu_set_cpus);
             }
             if let Some(cpu_shares) = options.cpu_shares {
-                query.append_pair("cpushares", &cpu_shares.to_string());
+                query.append_pair("cpushares", itoa::Buffer::new().format(cpu_shares));
             }
             if let Some(dockerfile) = options.dockerfile {
                 query.append_pair("dockerfile", dockerfile);
@@ -75,10 +75,10 @@ impl Client {
                 query.append_pair("layers", bool_to_str(layers));
             }
             if let Some(memory) = options.memory {
-                query.append_pair("memory", &memory.to_string());
+                query.append_pair("memory", itoa::Buffer::new().format(memory));
             }
             if let Some(mem_swap) = options.mem_swap {
-                query.append_pair("memswap", &mem_swap.to_string());
+                query.append_pair("memswap", itoa::Buffer::new().format(mem_swap));
             }
             if let Some(network_mode) = options.network_mode {
                 query.append_pair("networkmode", network_mode);
@@ -108,7 +108,7 @@ impl Client {
                 query.append_pair("rm", bool_to_str(rm));
             }
             if let Some(shm_size) = options.shm_size {
-                query.append_pair("shmsize", &shm_size.to_string());
+                query.append_pair("shmsize", itoa::Buffer::new().format(shm_size));
             }
             if let Some(squash) = options.squash {
                 query.append_pair("squash", bool_to_str(squash));
@@ -139,12 +139,15 @@ impl Client {
                 path += &["?", query_string.as_str()].concat();
             }
 
-            let mut headers = HashMap::new();
+            let mut h = HashMap::new();
             if let Some(content_type) = options.content_type {
-                headers.insert("Content-Type", content_type);
+                h.insert("Content-Type", content_type);
             }
             if let Some(x_registry_config) = options.x_registry_config {
-                headers.insert("X-Registry-Config", x_registry_config);
+                h.insert("X-Registry-Config", x_registry_config);
+            }
+            if !h.is_empty() {
+                header = Some(h);
             }
         }
 

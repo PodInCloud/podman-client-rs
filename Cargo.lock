@@ -417,6 +417,7 @@ dependencies = [
  "http-body-util",
  "hyper",
  "hyper-util",
+ "itoa",
  "serde",
  "serde_json",
  "tokio",

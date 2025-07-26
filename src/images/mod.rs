@@ -1,7 +1,17 @@
+mod change_report;
 mod copy;
 mod create;
 mod exists;
 mod history;
 mod inspect;
 mod list;
+mod prune;
+mod pull;
+mod push;
+mod remove;
+mod remove_many;
+mod resolve;
+mod search;
+mod tag;
 mod tree;
+mod untag;

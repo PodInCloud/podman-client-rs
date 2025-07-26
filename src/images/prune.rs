@@ -9,30 +9,31 @@ use crate::{
     models::{
         connection::SendRequestOptions,
         lib::Error,
-        podman::images::list::{ImageList, ImageListOptions},
+        podman::images::prune::{ImagePrune, ImagePruneOptions},
     },
     utils::bool_to_str::bool_to_str,
 };
 
 impl Client {
-    pub async fn image_list(
+    pub async fn image_prune(
         &self,
-        options: Option<ImageListOptions<'_>>,
-    ) -> Result<ImageList, Error> {
-        let mut path = "/libpod/images/json".to_owned();
+        options: Option<ImagePruneOptions<'_>>,
+    ) -> Result<ImagePrune, Error> {
+        let mut path = "/libpod/images/prune".to_owned();
 
         if let Some(options) = options {
             let mut query = form_urlencoded::Serializer::new(String::new());
             if let Some(all) = options.all {
                 query.append_pair("all", bool_to_str(all));
             }
+            if let Some(build_cache) = options.build_cache {
+                query.append_pair("buildcache", bool_to_str(build_cache));
+            }
+            if let Some(external) = options.external {
+                query.append_pair("external", bool_to_str(external));
+            }
             if let Some(opt_filters) = options.filters {
                 let mut filters = HashMap::new();
-                if let Some(before) = opt_filters.before
-                    && !before.is_empty()
-                {
-                    filters.insert("before", before);
-                }
                 if let Some(dangling) = opt_filters.dangling
                     && !dangling.is_empty()
                 {
@@ -41,25 +42,20 @@ impl Client {
                         dangling.iter().map(|&d| bool_to_str(d)).collect(),
                     );
                 }
+                if let Some(until) = opt_filters.until
+                    && !until.is_empty()
+                {
+                    filters.insert("until", until);
+                }
                 if let Some(label) = opt_filters.label
                     && !label.is_empty()
                 {
                     filters.insert("label", label);
                 }
-                if let Some(reference) = opt_filters.reference
-                    && !reference.is_empty()
+                if let Some(labelnot) = opt_filters.labelnot
+                    && !labelnot.is_empty()
                 {
-                    filters.insert("reference", reference);
-                }
-                if let Some(id) = opt_filters.id
-                    && !id.is_empty()
-                {
-                    filters.insert("id", id);
-                }
-                if let Some(since) = opt_filters.since
-                    && !since.is_empty()
-                {
-                    filters.insert("since", since);
+                    filters.insert("label!", labelnot);
                 }
 
                 if !filters.is_empty() {
@@ -78,7 +74,7 @@ impl Client {
 
         let (_, data) = self
             .send_request::<_, (), _>(SendRequestOptions {
-                method: "GET",
+                method: "POST",
                 path: &path,
                 header: None,
                 body: Empty::<Bytes>::new(),

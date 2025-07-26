@@ -1,7 +1,17 @@
+pub mod change_report;
 pub mod copy;
 pub mod create;
 pub mod exists;
 pub mod history;
 pub mod inspect;
 pub mod list;
+pub mod prune;
+pub mod pull;
+pub mod push;
+pub mod remove;
+pub mod remove_many;
+pub mod resolve;
+pub mod search;
+pub mod tag;
 pub mod tree;
+pub mod untag;
