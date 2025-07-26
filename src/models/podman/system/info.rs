@@ -3,6 +3,8 @@ use std::collections::HashMap;
 
 use serde::{Deserialize, Serialize};
 
+use crate::models::podman::common::id_map::IdMap;
+
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SystemInfo {
@@ -87,15 +89,8 @@ pub struct SystemInfoHostDistribution {
 #[derive(Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct SystemInfoHostIdMappings {
-    pub gidmap: Vec<SystemInfoHostIdMappingsIdMap>,
-    pub uidmap: Vec<SystemInfoHostIdMappingsIdMap>,
-}
-
-#[derive(Deserialize, Serialize)]
-pub struct SystemInfoHostIdMappingsIdMap {
-    pub container_id: u32,
-    pub host_id: u32,
-    pub size: u32,
+    pub gidmap: Vec<IdMap>,
+    pub uidmap: Vec<IdMap>,
 }
 
 #[derive(Deserialize, Serialize)]
