@@ -1,10 +1,15 @@
 pub mod create;
+pub mod exists;
 pub mod inspect;
 pub mod kill;
 pub mod kube_apply;
 pub mod kube_generate;
 pub mod kube_play;
+pub mod kube_play_remove;
 pub mod list;
 pub mod list_processes;
 pub mod pause;
+pub mod prune;
+pub mod remove;
+pub mod restart;
 pub mod systemd_units_generate;

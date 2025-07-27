@@ -1,10 +1,15 @@
 mod create;
+mod exists;
 mod inspect;
 mod kill;
 mod kube_apply;
 mod kube_generate;
 mod kube_play;
+mod kube_play_remove;
 mod list;
 mod list_processes;
 mod pause;
+mod prune;
+mod remove;
+mod restart;
 mod systemd_units_generate;
