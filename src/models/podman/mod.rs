@@ -1,5 +1,6 @@
 pub mod common;
 pub mod error;
+pub mod exec;
 pub mod images;
 pub mod manifests;
 pub mod networks;
