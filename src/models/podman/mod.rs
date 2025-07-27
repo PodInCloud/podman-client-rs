@@ -1,6 +1,7 @@
 pub mod common;
 pub mod error;
 pub mod images;
+pub mod manifests;
 pub mod networks;
 pub mod pods;
 pub mod secrets;

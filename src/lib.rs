@@ -3,6 +3,7 @@
 pub mod client;
 mod connection;
 mod images;
+mod manifests;
 pub mod models;
 mod networks;
 mod pods;
