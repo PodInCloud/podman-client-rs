@@ -3,9 +3,8 @@ use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use serde::Serialize;
 
-use crate::models::podman::{
-    common::{network_route::NetworkRoute, network_subnet::NetworkSubnet},
-    networks::inspect::NetworkInspect,
+use crate::models::podman::networks::inspect::{
+    NetworkInspect, NetworkInspectRoute, NetworkInspectSubnet,
 };
 
 #[derive(Serialize)]
@@ -22,8 +21,8 @@ pub struct NetworkCreateOptions {
     pub network_dns_servers: Vec<String>,
     pub network_interface: String,
     pub options: HashMap<String, String>,
-    pub routes: Vec<NetworkRoute>,
-    pub subnets: Vec<NetworkSubnet>,
+    pub routes: Vec<NetworkInspectRoute>,
+    pub subnets: Vec<NetworkInspectSubnet>,
 }
 
 pub type NetworkCreate = NetworkInspect;

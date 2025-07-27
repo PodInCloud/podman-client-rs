@@ -1,8 +1,8 @@
-use crate::models::podman::common::play_kube::PlayKube;
+use crate::models::podman::pods::kube_play::PodKubePlay;
 
 #[derive(Default)]
 pub struct PodKubePlayRemoveOptions {
     pub force: Option<bool>,
 }
 
-pub type PodKubePlayRemove = PlayKube;
+pub type PodKubePlayRemove = PodKubePlay;

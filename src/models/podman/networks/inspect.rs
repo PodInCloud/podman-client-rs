@@ -4,8 +4,6 @@ use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
-use crate::models::podman::common::{network_route::NetworkRoute, network_subnet::NetworkSubnet};
-
 pub struct NetworkInspectOptions<'a> {
     pub name: &'a str,
 }
@@ -25,8 +23,8 @@ pub struct NetworkInspect {
     pub network_dns_servers: Vec<String>,
     pub network_interface: String,
     pub options: HashMap<String, String>,
-    pub routes: Vec<NetworkRoute>,
-    pub subnets: Vec<NetworkSubnet>,
+    pub routes: Vec<NetworkInspectRoute>,
+    pub subnets: Vec<NetworkInspectSubnet>,
 }
 
 impl fmt::Debug for NetworkInspect {
@@ -60,4 +58,24 @@ pub struct NetworkInspectContainerInterfaceSubnetIpnet {
     #[serde(rename = "IP")]
     pub ip: String,
     pub mask: Vec<u8>,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct NetworkInspectRoute {
+    pub destination: String,
+    pub gateway: String,
+    pub metric: u32,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct NetworkInspectSubnet {
+    pub gateway: String,
+    pub lease_range: NetworkInspectSubnetLeaseRange,
+    pub subnet: String,
+}
+
+#[derive(Deserialize, Serialize)]
+pub struct NetworkInspectSubnetLeaseRange {
+    pub end_ip: String,
+    pub start_ip: String,
 }
