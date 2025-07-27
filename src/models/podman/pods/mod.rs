@@ -3,4 +3,8 @@ pub mod inspect;
 pub mod kill;
 pub mod kube_apply;
 pub mod kube_generate;
+pub mod kube_play;
+pub mod list;
+pub mod list_processes;
+pub mod pause;
 pub mod systemd_units_generate;

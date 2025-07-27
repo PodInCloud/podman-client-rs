@@ -9,12 +9,20 @@ pub struct ImageChangeReportOptions<'a> {
     pub parent: Option<&'a str>,
 }
 
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "lowercase")]
 pub enum ImageChangeReportDiffTypeOptions {
     All,
     Container,
     Image,
+}
+
+impl ImageChangeReportDiffTypeOptions {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            Self::All => "all",
+            Self::Container => "container",
+            Self::Image => "image",
+        }
+    }
 }
 
 pub type ImageChangeReport = Vec<ImageChangeReportItem>;

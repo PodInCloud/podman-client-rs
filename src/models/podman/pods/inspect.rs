@@ -1,3 +1,4 @@
+use core::fmt;
 use std::{collections::HashMap, net::Ipv4Addr};
 
 use chrono::{DateTime, Utc};
@@ -64,6 +65,13 @@ pub struct PodInspect {
     #[serde(rename = "State")]
     pub state: String,
     pub volumes_from: Vec<String>,
+}
+
+impl fmt::Debug for PodInspect {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let json = serde_json::to_string_pretty(self).map_err(|_| fmt::Error)?;
+        f.write_str(&json)
+    }
 }
 
 #[derive(Deserialize, Serialize)]

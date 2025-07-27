@@ -3,4 +3,8 @@ mod inspect;
 mod kill;
 mod kube_apply;
 mod kube_generate;
+mod kube_play;
+mod list;
+mod list_processes;
+mod pause;
 mod systemd_units_generate;

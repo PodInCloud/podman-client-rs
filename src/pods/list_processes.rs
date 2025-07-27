@@ -7,23 +7,27 @@ use crate::{
     models::{
         connection::SendRequestOptions,
         lib::Error,
-        podman::images::change_report::{ImageChangeReport, ImageChangeReportOptions},
+        podman::pods::list_processes::{PodListProcesses, PodListProcessesOptions},
     },
+    utils::bool_to_str::bool_to_str,
 };
 
 impl Client {
-    pub async fn image_change_report(
+    pub async fn pod_list_processes(
         &self,
-        options: ImageChangeReportOptions<'_>,
-    ) -> Result<ImageChangeReport, Error> {
-        let mut path = ["/libpod/images", options.name, "/changes"].concat();
+        options: PodListProcessesOptions<'_>,
+    ) -> Result<PodListProcesses, Error> {
+        let mut path = ["/libpod/pods/", options.name, "/top"].concat();
 
         let mut query = form_urlencoded::Serializer::new(String::new());
-        if let Some(diff_type) = options.diff_type {
-            query.append_pair("diffType", diff_type.as_str());
+        if let Some(delay) = options.delay {
+            query.append_pair("delay", itoa::Buffer::new().format(delay));
         }
-        if let Some(parent) = options.parent {
-            query.append_pair("parent", parent);
+        if let Some(ps_args) = options.ps_args {
+            query.append_pair("ps_args", ps_args);
+        }
+        if let Some(stream) = options.stream {
+            query.append_pair("stream", bool_to_str(stream));
         }
         let query_string = query.finish();
         if !query_string.is_empty() {
