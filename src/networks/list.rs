@@ -9,46 +9,34 @@ use crate::{
     models::{
         connection::SendRequestOptions,
         lib::Error,
-        podman::pods::list::{PodList, PodListOptions},
+        podman::networks::list::{NetworkList, NetworkListOptions},
     },
 };
 
 impl Client {
-    pub async fn pod_list(&self, options: Option<PodListOptions<'_>>) -> Result<PodList, Error> {
-        let mut path = "/libpod/pods/json".to_owned();
+    pub async fn network_list(
+        &self,
+        options: Option<NetworkListOptions<'_>>,
+    ) -> Result<NetworkList, Error> {
+        let mut path = "/libpod/networks/json".to_owned();
 
         if let Some(options) = options {
             if let Some(opt_filters) = options.filters {
                 let mut filters = HashMap::new();
+                if let Some(name) = opt_filters.name {
+                    filters.insert("name", name);
+                }
                 if let Some(id) = opt_filters.id {
                     filters.insert("id", id);
+                }
+                if let Some(driver) = opt_filters.driver {
+                    filters.insert("driver", driver);
                 }
                 if let Some(label) = opt_filters.label {
                     filters.insert("label", label);
                 }
-                if let Some(name) = opt_filters.name {
-                    filters.insert("name", name);
-                }
                 if let Some(until) = opt_filters.until {
                     filters.insert("until", until);
-                }
-                if let Some(status) = opt_filters.status {
-                    filters.insert("status", status.iter().map(|s| s.as_str()).collect());
-                }
-                if let Some(network) = opt_filters.network {
-                    filters.insert("network", network);
-                }
-                if let Some(ctr_names) = opt_filters.ctr_names {
-                    filters.insert("ctr-names", ctr_names);
-                }
-                if let Some(ctr_ids) = opt_filters.ctr_ids {
-                    filters.insert("ctr-ids", ctr_ids);
-                }
-                if let Some(ctr_status) = opt_filters.ctr_status {
-                    filters.insert("ctr-status", ctr_status);
-                }
-                if let Some(ctr_number) = opt_filters.ctr_number {
-                    filters.insert("ctr-number", ctr_number);
                 }
                 if !filters.is_empty() {
                     let filters_json = serde_json::to_string(&filters)?;
