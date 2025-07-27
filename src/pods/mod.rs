@@ -12,4 +12,8 @@ mod pause;
 mod prune;
 mod remove;
 mod restart;
+mod start;
+mod stats;
+mod stop;
 mod systemd_units_generate;
+mod unpause;

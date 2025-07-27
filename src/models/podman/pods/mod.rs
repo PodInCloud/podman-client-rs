@@ -12,4 +12,8 @@ pub mod pause;
 pub mod prune;
 pub mod remove;
 pub mod restart;
+pub mod start;
+pub mod stats;
+pub mod stop;
 pub mod systemd_units_generate;
+pub mod unpause;
