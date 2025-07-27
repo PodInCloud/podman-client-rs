@@ -2,6 +2,7 @@
 
 pub mod client;
 mod connection;
+mod containers;
 mod exec;
 mod images;
 mod manifests;

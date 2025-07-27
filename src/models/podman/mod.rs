@@ -1,4 +1,5 @@
 pub mod common;
+pub mod containers;
 pub mod error;
 pub mod exec;
 pub mod images;
