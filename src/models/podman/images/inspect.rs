@@ -4,6 +4,8 @@ use std::collections::HashMap;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+use crate::models::podman::common::schema2_health_config::Schema2HealthConfig;
+
 pub struct ImageInspectOptions<'a> {
     pub name: &'a str,
 }
@@ -19,7 +21,7 @@ pub struct ImageInspect {
     pub created: DateTime<Utc>,
     pub digest: String,
     pub graph_driver: ImageInspectGraphDriver,
-    pub healthcheck: ImageInspectHealthcheck,
+    pub healthcheck: Schema2HealthConfig,
     pub history: Vec<ImageInspectHistory>,
     pub id: String,
     pub labels: HashMap<String, String>,
@@ -63,17 +65,6 @@ pub struct ImageInspectConfig {
 pub struct ImageInspectGraphDriver {
     pub data: HashMap<String, String>,
     pub name: String,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct ImageInspectHealthcheck {
-    pub interval: i64,
-    pub retries: i64,
-    pub start_interval: i64,
-    pub start_period: i64,
-    pub test: Vec<String>,
-    pub timeout: i64,
 }
 
 #[derive(Deserialize, Serialize)]

@@ -1,2 +1,15 @@
 pub mod id_map;
+pub mod id_mapping_options;
+pub mod image_volume;
+pub mod linux_device_cgroup;
+pub mod linux_resources;
+pub mod linux_throttle_device;
+pub mod linux_weight_device;
+pub mod named_volume;
+pub mod namespace;
+pub mod overlay_volume;
+pub mod per_network_options;
 pub mod pod_rm_report;
+pub mod port_mapping;
+pub mod schema2_health_config;
+pub mod volume_mount;
