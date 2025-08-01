@@ -1,4 +1,11 @@
 mod commit;
 mod create;
+mod delete;
+mod delete_stopped;
 mod exists;
+mod initialize;
+mod inspect;
 mod kube_apply;
+mod kube_generate;
+mod stats;
+mod systemd_units_generate;

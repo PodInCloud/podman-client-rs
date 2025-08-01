@@ -1,4 +1,11 @@
 pub mod commit;
 pub mod create;
+pub mod delete;
+pub mod delete_stopped;
 pub mod exists;
+pub mod initialize;
+pub mod inspect;
 pub mod kube_apply;
+pub mod kube_generate;
+pub mod stats;
+pub mod systemd_units_generate;

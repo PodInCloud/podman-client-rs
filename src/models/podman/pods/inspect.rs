@@ -4,6 +4,11 @@ use std::{collections::HashMap, net::Ipv4Addr};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
+use crate::models::podman::common::{
+    blkio_weight_device::BlkioWeightDevice, inspect_device::InspectDevice,
+    inspect_host_port::InspectHostPort, inspect_mount::InspectMount,
+};
+
 pub struct PodInspectOptions<'a> {
     pub name: &'a str,
 }
@@ -11,7 +16,7 @@ pub struct PodInspectOptions<'a> {
 #[derive(Deserialize, Serialize)]
 pub struct PodInspect {
     pub blkio_weight: u64,
-    pub blkio_weight_device: Vec<PodInspectBlkioWeightDevice>,
+    pub blkio_weight_device: Vec<BlkioWeightDevice>,
     #[serde(rename = "CgroupParent")]
     pub cgroup_parent: String,
     #[serde(rename = "CgroupPath")]
@@ -34,7 +39,7 @@ pub struct PodInspect {
     pub device_read_bps: Vec<PodCreateBlkioThrottleDevice>,
     pub device_write_bps: Vec<PodCreateBlkioThrottleDevice>,
     #[serde(rename = "Devices")]
-    pub devices: Vec<PodCreateDevice>,
+    pub devices: Vec<InspectDevice>,
     #[serde(rename = "ExitPolicy")]
     pub exit_policy: String,
     #[serde(rename = "Hostname")]
@@ -50,7 +55,7 @@ pub struct PodInspect {
     pub lock_number: u32,
     pub memory_limit: u64,
     pub memory_swap: u64,
-    pub mounts: Vec<PodCreateMount>,
+    pub mounts: Vec<InspectMount>,
     #[serde(rename = "Name")]
     pub name: String,
     #[serde(rename = "Namespace")]
@@ -75,12 +80,6 @@ impl fmt::Debug for PodInspect {
 }
 
 #[derive(Deserialize, Serialize)]
-pub struct PodInspectBlkioWeightDevice {
-    pub path: String,
-    pub weight: u16,
-}
-
-#[derive(Deserialize, Serialize)]
 pub struct PodInspectContainer {
     pub id: String,
     pub name: String,
@@ -91,14 +90,6 @@ pub struct PodInspectContainer {
 pub struct PodCreateBlkioThrottleDevice {
     pub path: String,
     pub rate: u64,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct PodCreateDevice {
-    pub cgroup_permissions: String,
-    pub path_in_container: String,
-    pub path_in_host: String,
 }
 
 #[derive(Deserialize, Serialize)]
@@ -128,34 +119,11 @@ pub struct PodCreateInfraConfig {
     pub no_manage_resolv_conf: bool,
     pub pid_ns: String,
     #[serde(rename = "PortBindings")]
-    pub port_bindings: HashMap<String, Vec<PodCreateInfraConfigPortBinding>>,
+    pub port_bindings: HashMap<String, Vec<InspectHostPort>>,
     #[serde(rename = "StaticIP")]
     pub static_ip: Ipv4Addr,
     #[serde(rename = "StaticMAC")]
     pub static_mac: String,
     pub userns: String,
     pub uts_ns: String,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct PodCreateInfraConfigPortBinding {
-    pub host_ip: String,
-    pub host_port: String,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct PodCreateMount {
-    pub destination: String,
-    pub driver: String,
-    pub mode: String,
-    pub name: String,
-    pub options: Vec<String>,
-    pub propagation: String,
-    #[serde(rename = "RW")]
-    pub rw: bool,
-    pub source: String,
-    pub sub_path: String,
-    pub r#type: String,
 }
