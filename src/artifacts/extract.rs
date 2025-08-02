@@ -5,25 +5,21 @@ use url::form_urlencoded;
 use crate::{
     client::Client,
     models::{
-        connection::SendRequestOptions,
-        lib::Error,
-        podman::images::change_report::{ImageChangeReport, ImageChangeReportOptions},
+        connection::SendRequestOptions, lib::Error,
+        podman::artifacts::extract::ArtifactExtractOptions,
     },
 };
 
 impl Client {
-    pub async fn image_change_report(
-        &self,
-        options: ImageChangeReportOptions<'_>,
-    ) -> Result<ImageChangeReport, Error> {
-        let mut path = ["/libpod/images/", options.name, "/changes"].concat();
+    pub async fn artifact_extract(&self, options: ArtifactExtractOptions<'_>) -> Result<(), Error> {
+        let mut path = ["/libpod/artifacts/", options.name, "/extract"].concat();
 
         let mut query = form_urlencoded::Serializer::new(String::new());
-        if let Some(diff_type) = options.diff_type {
-            query.append_pair("diffType", diff_type.as_str());
+        if let Some(digest) = options.digest {
+            query.append_pair("digest", digest);
         }
-        if let Some(parent) = options.parent {
-            query.append_pair("parent", parent);
+        if let Some(title) = options.title {
+            query.append_pair("title", title);
         }
         let query_string = query.finish();
         if !query_string.is_empty() {

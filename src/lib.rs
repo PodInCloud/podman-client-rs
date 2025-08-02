@@ -1,5 +1,6 @@
 #![deny(unused_imports)]
 
+mod artifacts;
 pub mod client;
 mod connection;
 mod containers;

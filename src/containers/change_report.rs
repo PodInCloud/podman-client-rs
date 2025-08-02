@@ -7,16 +7,16 @@ use crate::{
     models::{
         connection::SendRequestOptions,
         lib::Error,
-        podman::images::change_report::{ImageChangeReport, ImageChangeReportOptions},
+        podman::containers::change_report::{ContainerChangeReport, ContainerChangeReportOptions},
     },
 };
 
 impl Client {
-    pub async fn image_change_report(
+    pub async fn container_change_report(
         &self,
-        options: ImageChangeReportOptions<'_>,
-    ) -> Result<ImageChangeReport, Error> {
-        let mut path = ["/libpod/images/", options.name, "/changes"].concat();
+        options: ContainerChangeReportOptions<'_>,
+    ) -> Result<ContainerChangeReport, Error> {
+        let mut path = ["/libpod/containers/", options.name, "/changes"].concat();
 
         let mut query = form_urlencoded::Serializer::new(String::new());
         if let Some(diff_type) = options.diff_type {

@@ -5,25 +5,21 @@ use url::form_urlencoded;
 use crate::{
     client::Client,
     models::{
-        connection::SendRequestOptions,
-        lib::Error,
-        podman::images::change_report::{ImageChangeReport, ImageChangeReportOptions},
+        connection::SendRequestOptions, lib::Error, podman::containers::stop::ContainerStopOptions,
     },
+    utils::bool_to_str::bool_to_str,
 };
 
 impl Client {
-    pub async fn image_change_report(
-        &self,
-        options: ImageChangeReportOptions<'_>,
-    ) -> Result<ImageChangeReport, Error> {
-        let mut path = ["/libpod/images/", options.name, "/changes"].concat();
+    pub async fn container_stop(&self, options: ContainerStopOptions<'_>) -> Result<(), Error> {
+        let mut path = ["/libpod/containers/", options.name, "/stop"].concat();
 
         let mut query = form_urlencoded::Serializer::new(String::new());
-        if let Some(diff_type) = options.diff_type {
-            query.append_pair("diffType", diff_type.as_str());
+        if let Some(ignore) = options.ignore {
+            query.append_pair("Ignore", bool_to_str(ignore));
         }
-        if let Some(parent) = options.parent {
-            query.append_pair("parent", parent);
+        if let Some(timeout) = options.timeout {
+            query.append_pair("timeout", itoa::Buffer::new().format(timeout));
         }
         let query_string = query.finish();
         if !query_string.is_empty() {
@@ -32,7 +28,7 @@ impl Client {
 
         let (_, data) = self
             .send_request::<_, (), _>(SendRequestOptions {
-                method: "GET",
+                method: "POST",
                 path: &path,
                 header: None,
                 body: Empty::<Bytes>::new(),

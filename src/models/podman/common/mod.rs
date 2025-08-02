@@ -1,4 +1,5 @@
 pub mod blkio_weight_device;
+pub mod health_check;
 pub mod id_map;
 pub mod id_mapping_options;
 pub mod image_volume;
@@ -9,6 +10,7 @@ pub mod linux_device_cgroup;
 pub mod linux_resources;
 pub mod linux_throttle_device;
 pub mod linux_weight_device;
+pub mod manifest_platform;
 pub mod named_volume;
 pub mod namespace;
 pub mod overlay_volume;

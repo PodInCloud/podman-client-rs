@@ -7,23 +7,23 @@ use crate::{
     models::{
         connection::SendRequestOptions,
         lib::Error,
-        podman::images::change_report::{ImageChangeReport, ImageChangeReportOptions},
+        podman::containers::wait::{ContainerWait, ContainerWaitOptions},
     },
 };
 
 impl Client {
-    pub async fn image_change_report(
+    pub async fn container_wait(
         &self,
-        options: ImageChangeReportOptions<'_>,
-    ) -> Result<ImageChangeReport, Error> {
-        let mut path = ["/libpod/images/", options.name, "/changes"].concat();
+        options: ContainerWaitOptions<'_>,
+    ) -> Result<ContainerWait, Error> {
+        let mut path = ["/libpod/containers/", options.name, "/wait"].concat();
 
         let mut query = form_urlencoded::Serializer::new(String::new());
-        if let Some(diff_type) = options.diff_type {
-            query.append_pair("diffType", diff_type.as_str());
+        if let Some(condition) = options.condition {
+            query.append_pair("condition", condition.as_str());
         }
-        if let Some(parent) = options.parent {
-            query.append_pair("parent", parent);
+        if let Some(interval) = options.interval {
+            query.append_pair("interval", interval);
         }
         let query_string = query.finish();
         if !query_string.is_empty() {
@@ -32,7 +32,7 @@ impl Client {
 
         let (_, data) = self
             .send_request::<_, (), _>(SendRequestOptions {
-                method: "GET",
+                method: "POST",
                 path: &path,
                 header: None,
                 body: Empty::<Bytes>::new(),

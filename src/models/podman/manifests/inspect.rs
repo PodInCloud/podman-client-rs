@@ -2,6 +2,8 @@ use core::fmt;
 
 use serde::{Deserialize, Serialize};
 
+use crate::models::podman::common::manifest_platform::ManifestPlatform;
+
 #[derive(Default)]
 pub struct ManifestInspectOptions<'a> {
     pub name: &'a str,
@@ -28,19 +30,7 @@ impl fmt::Debug for ManifestInspect {
 pub struct ManifestInspectManifest {
     pub digest: String,
     pub media_type: String,
-    pub platform: ManifestInspectManifestPlatform,
+    pub platform: ManifestPlatform,
     pub size: i64,
     pub urls: Vec<String>,
-}
-
-#[derive(Deserialize, Serialize)]
-pub struct ManifestInspectManifestPlatform {
-    pub architecture: String,
-    pub features: Vec<String>,
-    pub os: String,
-    #[serde(rename = "os.features")]
-    pub os_features: Vec<String>,
-    #[serde(rename = "os.version")]
-    pub os_version: String,
-    pub variant: String,
 }

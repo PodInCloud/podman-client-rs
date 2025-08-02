@@ -7,23 +7,23 @@ use crate::{
     models::{
         connection::SendRequestOptions,
         lib::Error,
-        podman::images::change_report::{ImageChangeReport, ImageChangeReportOptions},
+        podman::containers::resize::{ContainerResize, ContainerResizeOptions},
     },
 };
 
 impl Client {
-    pub async fn image_change_report(
+    pub async fn container_resize(
         &self,
-        options: ImageChangeReportOptions<'_>,
-    ) -> Result<ImageChangeReport, Error> {
-        let mut path = ["/libpod/images/", options.name, "/changes"].concat();
+        options: ContainerResizeOptions<'_>,
+    ) -> Result<ContainerResize, Error> {
+        let mut path = ["/libpod/containers/", options.name, "/resize"].concat();
 
         let mut query = form_urlencoded::Serializer::new(String::new());
-        if let Some(diff_type) = options.diff_type {
-            query.append_pair("diffType", diff_type.as_str());
+        if let Some(h) = options.h {
+            query.append_pair("h", itoa::Buffer::new().format(h));
         }
-        if let Some(parent) = options.parent {
-            query.append_pair("parent", parent);
+        if let Some(w) = options.w {
+            query.append_pair("w", itoa::Buffer::new().format(w));
         }
         let query_string = query.finish();
         if !query_string.is_empty() {
@@ -32,7 +32,7 @@ impl Client {
 
         let (_, data) = self
             .send_request::<_, (), _>(SendRequestOptions {
-                method: "GET",
+                method: "POST",
                 path: &path,
                 header: None,
                 body: Empty::<Bytes>::new(),

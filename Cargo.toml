@@ -1,6 +1,6 @@
 [package]
 name = "podman-client"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2024"
 description = "A native Rust client for the Podman REST API over Unix sockets"
 readme = "README.md"

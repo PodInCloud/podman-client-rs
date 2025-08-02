@@ -5,8 +5,8 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 
 use crate::models::podman::common::{
-    blkio_weight_device::BlkioWeightDevice, inspect_device::InspectDevice,
-    inspect_host_port::InspectHostPort, inspect_mount::InspectMount,
+    blkio_weight_device::BlkioWeightDevice, health_check::HealthCheck,
+    inspect_device::InspectDevice, inspect_host_port::InspectHostPort, inspect_mount::InspectMount,
     schema2_health_config::Schema2HealthConfig,
 };
 
@@ -359,7 +359,7 @@ pub struct ContainerInspectState {
     pub error: String,
     pub exit_code: i32,
     pub finished_at: DateTime<Utc>,
-    pub health: ContainerInspectStateHealth,
+    pub health: HealthCheck,
     pub oci_version: String,
     #[serde(rename = "OOMKilled")]
     pub oom_killed: bool,
@@ -373,21 +373,4 @@ pub struct ContainerInspectState {
     pub started_at: DateTime<Utc>,
     pub status: String,
     pub stopped_by_user: bool,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct ContainerInspectStateHealth {
-    pub failing_streak: i64,
-    pub log: Vec<ContainerInspectStateHealthLog>,
-    pub status: String,
-}
-
-#[derive(Deserialize, Serialize)]
-#[serde(rename_all = "PascalCase")]
-pub struct ContainerInspectStateHealthLog {
-    pub end: String,
-    pub exit_code: i64,
-    pub output: String,
-    pub start: String,
 }

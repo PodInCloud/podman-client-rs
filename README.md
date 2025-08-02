@@ -1,5 +1,9 @@
-# podman-client
+[Latest Version]: https://img.shields.io/crates/v/podman-client.svg
+[crates.io]: https://crates.io/crates/podman-client
 
+# podman-client
+[![Latest Version]][crates.io]
+================================================================================
 A minimal async client for Podman over a Unix socket, written in Rust using `hyper` and `tokio`.
 
 This crate provides basic Podman API access over a Unix domain socket with lightweight dependencies.
@@ -18,7 +22,7 @@ podman-client = "0.1"
 Make sure the Podman socket is running:
 
 ```sh
-podman system service --time=0 unix:///run/user/1000/podman/podman.sock
+podman system service --time=0
 ```
 
 Then use the client like this:

@@ -17,7 +17,6 @@ use crate::{
 impl Client {
     pub async fn image_push(&self, options: ImagePushOptions<'_>) -> Result<ImagePush, Error> {
         let mut path = ["/libpod/images/", options.name, "/push"].concat();
-        let mut header = None;
 
         let mut query = form_urlencoded::Serializer::new(String::new());
         if let Some(all) = options.all {
@@ -64,6 +63,7 @@ impl Client {
             path += &["?", &query_string].concat();
         }
 
+        let mut header = None;
         if let Some(x_registry_auth) = options.x_registry_auth {
             header = Some(HashMap::from([("X-Registry-Auth", x_registry_auth)]));
         }

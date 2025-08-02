@@ -58,9 +58,7 @@ impl Client {
             }
 
             if let Some(x_registry_auth) = options.x_registry_auth {
-                let mut h = HashMap::new();
-                h.insert("x_registry_auth", x_registry_auth);
-                header = Some(h);
+                header = Some(HashMap::from([("X-Registry-Auth", x_registry_auth)]));
             }
         }
 
